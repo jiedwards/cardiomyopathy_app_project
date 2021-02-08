@@ -7,7 +7,7 @@
         </div>
         <form @submit.prevent="Register">
           <div class="card-content">
-            <label for="email">Email Address</label>
+            <label for="email">Email Address (This will be your username)</label>
             <div class="input-field">
               <i class="material-icons prefix">email</i>
               <input type="email" id="email" v-model="email" />
@@ -19,6 +19,21 @@
               <input type="password" id="password" v-model="password" />
             </div>
             <br />
+
+            <label for="email">Name</label>
+            <div class="input-field">
+              <i class="material-icons prefix">person</i>
+              <input type="text" id="name" v-model="name" required/>
+            </div>
+            <br />
+
+            <label for="institution">Institution</label>
+            <div class="input-field">
+              <i class="material-icons prefix">school</i>
+              <input type="text" id="institution" v-model="institution" required/>
+            </div>
+            <br />
+
             <div class="form-field">
               <button v-on:click="register" class="btn-large red lighten-2">
                 Register
@@ -40,12 +55,15 @@
 <script>
 import { ref } from "vue";
 import firebase from "../utils/firebase";
+const db = firebase.firestore();
 
 export default {
   data() {
     return {
       email: ref(""),
       password: ref(""),
+      name: ref(""),
+      institution: ref("")
     };
   },
   methods: {
@@ -53,8 +71,20 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.$router.push('/dashboard');
+        .then((data) => {
+          db.collection("users")
+            .add({
+              user_id : data.user.uid,
+              email : this.email,
+              name : this.name,
+              institution : this.institution,
+              date_created : new Date(),
+              date_modified : new Date()
+            })
+            .then(() => {
+              this.$router.push('/dashboard');
+            })
+            .catch((err) => alert(err.message));
         })
         .catch((err) => alert(err.message));
     },
