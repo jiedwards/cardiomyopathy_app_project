@@ -18,9 +18,13 @@
               <i class="material-icons prefix">lock</i>
               <input type="password" id="password" v-model="password" />
             </div>
+            <a href="#" class="pull-right" v-on:click="ForgotPassword"
+              >Forgot password</a
+            >
+            <br />
             <br />
             <div class="form-field">
-              <button v-on:click="login" class="btn-large red lighten-2">
+              <button v-on:click="Login" class="btn-large red lighten-2">
                 Login
               </button>
             </div>
@@ -57,7 +61,9 @@ export default {
             this.$router.push("/dashboard");
           } else {
             firebase.auth().currentUser.sendEmailVerification();
-            alert("Email address is not verified. An email will be sent to authenticate your account.");
+            alert(
+              "Email address is not verified. An email will be sent to authenticate your account."
+            );
             firebase
               .auth()
               .signOut()
@@ -68,6 +74,19 @@ export default {
           }
         })
         .catch((err) => alert(err.message));
+    },
+    ForgotPassword() {
+      if (confirm(`Would you like a password reset email to be sent to: ${this.email} `)) {
+        firebase
+          .auth()
+          .sendPasswordResetEmail(this.email)
+          .then(() => {
+            alert(
+              "A password reset email has been sent to the email address entered above."
+            );
+          })
+          .catch((err) => alert(err.message));
+      }
     },
   },
 };
