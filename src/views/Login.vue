@@ -53,7 +53,19 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.$router.push('/dashboard');
+          if (firebase.auth().currentUser.emailVerified) {
+            this.$router.push("/dashboard");
+          } else {
+            firebase.auth().currentUser.sendEmailVerification();
+            alert("Email address is not verified. An email will be sent to authenticate your account.");
+            firebase
+              .auth()
+              .signOut()
+              .then(() => {
+                this.$router.push("/login");
+              })
+              .catch((err) => alert(err.message));
+          }
         })
         .catch((err) => alert(err.message));
     },

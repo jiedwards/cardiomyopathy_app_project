@@ -7,7 +7,9 @@
         </div>
         <form @submit.prevent="Register">
           <div class="card-content">
-            <label for="email">Email Address (This will be your username)</label>
+            <label for="email"
+              >Email Address (This will be your username)</label
+            >
             <div class="input-field">
               <i class="material-icons prefix">email</i>
               <input type="email" id="email" v-model="email" />
@@ -23,14 +25,19 @@
             <label for="email">Name</label>
             <div class="input-field">
               <i class="material-icons prefix">person</i>
-              <input type="text" id="name" v-model="name" required/>
+              <input type="text" id="name" v-model="name" required />
             </div>
             <br />
 
             <label for="institution">Institution</label>
             <div class="input-field">
               <i class="material-icons prefix">school</i>
-              <input type="text" id="institution" v-model="institution" required/>
+              <input
+                type="text"
+                id="institution"
+                v-model="institution"
+                required
+              />
             </div>
             <br />
 
@@ -63,7 +70,7 @@ export default {
       email: ref(""),
       password: ref(""),
       name: ref(""),
-      institution: ref("")
+      institution: ref(""),
     };
   },
   methods: {
@@ -73,16 +80,26 @@ export default {
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((data) => {
           db.collection("users")
-            .add({
-              user_id : data.user.uid,
-              email : this.email,
-              name : this.name,
-              institution : this.institution,
-              date_created : new Date(),
-              date_modified : new Date()
+            .doc(data.user.uid)
+            .set({
+              user_id: data.user.uid,
+              email: this.email,
+              name: this.name,
+              institution: this.institution,
+              date_created: new Date(),
+              date_modified: new Date(),
             })
             .then(() => {
-              this.$router.push('/dashboard');
+              firebase.auth().currentUser.sendEmailVerification();
+              console.log("email sent");
+              alert("An email will be sent in order for you to authenticate your account.");
+              firebase
+                .auth()
+                .signOut()
+                .then(() => {
+                  this.$router.push("/login");
+                })
+                .catch((err) => alert(err.message));
             })
             .catch((err) => alert(err.message));
         })
