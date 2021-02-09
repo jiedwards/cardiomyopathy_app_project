@@ -3,7 +3,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <div id="app">
-    <Navbar :isLoggedIn="isLoggedIn"/>
+    <Navbar :isLoggedIn="isLoggedIn" :userProfileData="userProfileData"/>
   </div>
   <router-view />
 </template>
@@ -17,17 +17,26 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      userAuth: {}
+      userProfileData: {}
     }
   },
   mounted() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
+    const db = firebase.firestore();  
+        
+    firebase.auth().onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        db.collection("users")
+        .doc(currentUser.uid)
+        .get()
+        .then((user) => {
+          this.userProfileData = user.data();
+        })
+        .catch((err) => alert(err.message));
+
         this.isLoggedIn = true;
-        this.userAuth = user;
       } else {
         this.isLoggedIn = false;
-        this.userAuth = {};
+        this.userProfileData = {};
       }
     });
   },
