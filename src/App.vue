@@ -10,7 +10,7 @@
 
 <script>
 import Navbar from "./components/Navbar";
-import firebase from "./utils/firebase";
+import { firebaseAuth, firebaseDb } from "./utils/firebase";
 
 export default {
   name: "app",
@@ -21,11 +21,10 @@ export default {
     }
   },
   mounted() {
-    const db = firebase.firestore();  
         
-    firebase.auth().onAuthStateChanged((currentUser) => {
+    firebaseAuth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
-        db.collection("users")
+        firebaseDb.collection("users")
         .doc(currentUser.uid)
         .get()
         .then((user) => {

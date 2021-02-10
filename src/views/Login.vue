@@ -42,7 +42,7 @@
 
 <script>
 import { ref } from "vue";
-import firebase from "../utils/firebase";
+import { firebaseAuth } from "../utils/firebase";
 
 export default {
   data() {
@@ -53,19 +53,17 @@ export default {
   },
   methods: {
     Login() {
-      firebase
-        .auth()
+      firebaseAuth
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          if (firebase.auth().currentUser.emailVerified) {
+          if (firebaseAuth.currentUser.emailVerified) {
             this.$router.push("/dashboard");
           } else {
-            firebase.auth().currentUser.sendEmailVerification();
+            firebaseAuth.currentUser.sendEmailVerification();
             alert(
               "Email address is not verified. An email will be sent to authenticate your account."
             );
-            firebase
-              .auth()
+            firebaseAuth
               .signOut()
               .then(() => {
                 this.$router.push("/login");
@@ -77,8 +75,7 @@ export default {
     },
     ForgotPassword() {
       if (confirm(`Would you like a password reset email to be sent to: ${this.email} `)) {
-        firebase
-          .auth()
+        firebaseAuth
           .sendPasswordResetEmail(this.email)
           .then(() => {
             alert(
