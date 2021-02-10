@@ -3,7 +3,7 @@ import Home from '../views/Home.vue'
 import Login from '@/views/Login';
 import Register from '@/views/Register';
 import Dashboard from '@/views/Dashboard';
-import firebase from '../utils/firebase';
+import { firebase } from '../utils/firebase';
 
 let routes = [
   {

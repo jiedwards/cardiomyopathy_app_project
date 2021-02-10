@@ -61,8 +61,7 @@
 
 <script>
 import { ref } from "vue";
-import firebase from "../utils/firebase";
-const db = firebase.firestore();
+import { firebaseAuth, firebaseDb } from "../utils/firebase.js";
 
 export default {
   data() {
@@ -75,11 +74,10 @@ export default {
   },
   methods: {
     Register() {
-      firebase
-        .auth()
+      firebaseAuth
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((data) => {
-          db.collection("users")
+          firebaseDb.collection("users")
             .doc(data.user.uid)
             .set({
               user_id: data.user.uid,
@@ -90,11 +88,10 @@ export default {
               date_modified: new Date(),
             })
             .then(() => {
-              firebase.auth().currentUser.sendEmailVerification();
+              firebaseAuth.currentUser.sendEmailVerification();
               console.log("email sent");
               alert("An email will be sent in order for you to authenticate your account.");
-              firebase
-                .auth()
+              firebaseAuth
                 .signOut()
                 .then(() => {
                   this.$router.push("/login");

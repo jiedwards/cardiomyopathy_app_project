@@ -32,15 +32,14 @@
 
 
 <script>
-import firebase from "../utils/firebase";
+import { firebaseAuth } from "../utils/firebase";
 
 export default {
   name: "navbar",
   props: ["isLoggedIn", "userProfileData"],
   methods: {
     Logout: function () {
-      firebase
-        .auth()
+      firebaseAuth
         .signOut()
         .then(() => {
           this.$router.push('/');
