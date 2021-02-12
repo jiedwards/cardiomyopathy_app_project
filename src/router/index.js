@@ -46,6 +46,14 @@ let routes = [
     }
   },
   {
+    path: '/line-chart',
+    name: 'LineChart',
+    component: Line,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting
