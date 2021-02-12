@@ -1,13 +1,17 @@
 <template>
   <div class="homepage">
     <h3>Welcome to your members area.</h3>
-    <router-link to="/about">About</router-link>
+
+    <div>
+      <router-link class="btn-large red lighten-2 btn-large" to="/add-data"
+        >Add data<i class="material-icons right">show_chart</i></router-link
+      >
+    </div>
     <br />
   </div>
 </template>
 
 <script>
-
 export default {
   setup() {
   }

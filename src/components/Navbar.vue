@@ -4,15 +4,32 @@
       <div class="container-fluid">
         <ul class="left">
           <li><router-link to="/">Home</router-link></li>
+          <li><router-link to="/about">About</router-link></li>
         </ul>
-        <ul class="right">
-          <!-- Dropdown menu for when user is logged in -->
 
+        <!-- Dropdown menu for when user is logged in -->
+        <ul class="right">
           <div class="dropdown" v-if="isLoggedIn">
-            <a class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-               {{ userProfileData.name }} <i class="material-icons left">person</i> </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item"><router-link class="black-text" to="/dashboard">My dashboard</router-link></a>
+            <a
+              class="dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {{ userProfileData.name }}
+              <i class="material-icons left">person</i>
+            </a>
+            <div
+              class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            >
+              <a class="dropdown-item"
+                ><router-link class="black-text" to="/dashboard"
+                  >My dashboard</router-link
+                ></a
+              >
               <a class="dropdown-item text-center" @click="Logout">Logout</a>
             </div>
           </div>
@@ -42,10 +59,10 @@ export default {
       firebaseAuth
         .signOut()
         .then(() => {
-          this.$router.push('/');
+          this.$router.push("/");
         })
         .catch((err) => alert(err.message));
     },
-  }
+  },
 };
 </script>
