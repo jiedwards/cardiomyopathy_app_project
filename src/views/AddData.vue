@@ -139,16 +139,14 @@
                   type="file"
                   id="data_file"
                   @change="OnFileSelected"
-                  accept=".xlsx, .xls, .csv"
+                  accept=".csv"
                   required
                 />
               </div>
             </div>
             <div class="row">
               <div class="form-field mx-auto">
-                <button @click="SubmitNewData" class="btn-large red lighten-2">
-                  Submit data
-                </button>
+                <button class="btn-large red lighten-2">Submit data</button>
               </div>
             </div>
           </div>
@@ -221,7 +219,10 @@ export default {
               date_created: new Date(),
             })
             .then(() => {
-              alert("Data successfully added!");
+              alert(
+                "Data successfully added! You will be redirected back to the dashboard."
+              );
+              location.reload();
             })
             .catch((error) => {
               alert("Error adding data to db: ", error);
