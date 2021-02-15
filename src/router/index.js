@@ -3,6 +3,8 @@ import Home from '../views/Home.vue'
 import Login from '@/views/Login';
 import Register from '@/views/Register';
 import Dashboard from '@/views/Dashboard';
+import AddData from '@/views/AddData';
+import Line from '@/views/Line'; 
 import { firebase } from '../utils/firebase';
 
 let routes = [
@@ -33,6 +35,22 @@ let routes = [
     component: Register,
     meta: {
       requiresGuest: true
+    }
+  },
+  {
+    path: '/add-data',
+    name: 'AddData',
+    component: AddData,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/line-chart',
+    name: 'LineChart',
+    component: Line,
+    meta: {
+      requiresAuth: true
     }
   },
   {
