@@ -6,6 +6,7 @@ import Dashboard from '@/views/Dashboard';
 import AddData from '@/views/AddData';
 import Line from '@/views/Line'; 
 import { firebase } from '../utils/firebase';
+import DeleteData from '@/views/DeleteData';
 
 let routes = [
   {
@@ -41,6 +42,14 @@ let routes = [
     path: '/add-data',
     name: 'AddData',
     component: AddData,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/delete-data',
+    name: 'DeleteData',
+    component: DeleteData,
     meta: {
       requiresAuth: true
     }

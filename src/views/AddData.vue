@@ -216,7 +216,7 @@ export default {
               y_axis_tick_amount: self.y_axis_tick_amount.value,
               x_axis_data: x_axis_data,
               y_axis_data: y_axis_data,
-              date_created: new Date(),
+              date_created: new Date().toDateString(),
             })
             .then(() => {
               alert(
