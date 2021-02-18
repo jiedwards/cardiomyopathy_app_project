@@ -186,14 +186,15 @@ export default {
     },
     onDecimalOptionChange(event) {
       this.decimal_point = event.target.value;
+      console.log(this.decimal_point);
     },
-    SubmitNewData() {
+    SubmitNewData(event) {
       const papa = require("papaparse");
       let x_axis_data = [];
       let y_axis_data = [];
 
       papa.parse(this.selectedFile, {
-        complete: function (results) {
+        complete: (results) => {
           if (results.data) {
             for (let i = 1; i < results.data.length; i++) {
               x_axis_data.push(
@@ -202,8 +203,13 @@ export default {
               y_axis_data.push(results.data[i][1]);
             }
           }
-
-          firebaseDb
+          this.AddDataToFirebase(event, x_axis_data, y_axis_data);
+        },
+      });
+    },
+    
+    AddDataToFirebase(event, x_axis_data, y_axis_data) {
+      firebaseDb
             .collection("experimental-data")
             .add({
               user_id: firebaseAuth.currentUser.uid,
@@ -220,16 +226,14 @@ export default {
             })
             .then(() => {
               alert(
-                "Data successfully added! You will be redirected back to the dashboard."
+                "Data successfully added! The input form will now be cleared."
               );
-              location.reload();
+              event.target.reset();
             })
             .catch((error) => {
               alert("Error adding data to db: ", error);
             });
-        },
-      });
-    },
+    }
   },
 };
 </script>
