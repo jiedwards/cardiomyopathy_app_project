@@ -57,6 +57,7 @@ export default {
     let welcomeMessage = ref("");
 
     function GetAllUserCharts() {
+      this.chartList = [];
       firebaseDb
         .collection("experimental-data")
         .where("user_id", "==", firebaseAuth.currentUser.uid)
