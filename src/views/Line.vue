@@ -3,55 +3,65 @@
   <div>
     {{ welcomeMessage }}
 
-    <div class="container">
-      <div class="row">
-        <div class="input-field col-md">
-          <p>
-            Cardiomyopathy type
-            <i class="inline-icon material-icons">favorite_border</i>
-          </p>
-          <br />
-          <select
-            name="cardiomyopathy_type_choice"
-            id="cardiomyopathy_type_choice"
-            class="form-control"
-            @change="onCardiomyopathyTypeDropdownChange"
-            required
-          >
-            <option></option>
-            <option
-              v-for="cardiomyopathyType in cardiomyopathyTypes"
-              :key="cardiomyopathyType"
-              :value="cardiomyopathyType"
-            >
-              {{ cardiomyopathyType }}
-            </option>
-          </select>
-        </div>
+    <br /><br />
 
-        <div class="input-field col-md">
-          <p>
-            Mutated Gene
-            <i class="inline-icon material-icons">biotech</i>
-          </p>
-          <br />
-          <select
-            name="mutated_gene_choice"
-            id="mutated_gene_choice"
-            class="form-control"
-            @change="onMutatedGeneDropdownChange"
-            required
-          >
-            <option></option>
-            <option
-              v-for="mutatedGene in mutatedGenes"
-              :key="mutatedGene"
-              :value="mutatedGene"
+    <div class="container">
+      <div class="row justify-content-center">
+        <form @submit.prevent="GetFilteredExperimentalData">
+          <div class="input-field col-md">
+            <p>
+              Cardiomyopathy type
+              <i class="inline-icon material-icons">favorite_border</i>
+            </p>
+            <br />
+            <select
+              name="cardiomyopathy_type_choice"
+              id="cardiomyopathy_type_choice"
+              class="form-control"
+              @change="OnCardiomyopathyTypeDropdownChange"
+              required
             >
-              {{ mutatedGene }}
-            </option>
-          </select>
-        </div>
+              <option></option>
+              <option
+                v-for="cardiomyopathyType in cardiomyopathyTypes"
+                :key="cardiomyopathyType"
+                :value="cardiomyopathyType"
+              >
+                {{ cardiomyopathyType }}
+              </option>
+            </select>
+          </div>
+
+          <div class="input-field col-md">
+            <p>
+              Mutated Gene
+              <i class="inline-icon material-icons">biotech</i>
+            </p>
+            <br />
+            <select
+              name="mutated_gene_choice"
+              id="mutated_gene_choice"
+              class="form-control"
+              @change="OnMutatedGeneDropdownChange"
+              required
+            >
+              <option></option>
+              <option
+                v-for="mutatedGene in mutatedGenes"
+                :key="mutatedGene"
+                :value="mutatedGene"
+              >
+                {{ mutatedGene }}
+              </option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="form-field mx-auto">
+              <button class="btn-large red lighten-2">Filter</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -80,18 +90,18 @@ export default {
     };
   },
   beforeMount() {
-    this.getExperimentalData();
-    this.getExperimentalDataDropdownOptions();
+    this.GetExperimentalData();
+    this.GetExperimentalDataDropdownOptions();
   },
   methods: {
-    onCardiomyopathyTypeDropdownChange(event) {
+    OnCardiomyopathyTypeDropdownChange(event) {
       this.cardiomyopathy_type_choice = event.target.value;
-      this.getExperimentalDataDropdownOptions();
+      this.GetExperimentalDataDropdownOptions();
     },
-    onMutatedGeneDropdownChange(event) {
+    OnMutatedGeneDropdownChange(event) {
       this.mutated_gene_choice = event.target.value;
     },
-    getExperimentalDataDropdownOptions() {
+    GetExperimentalDataDropdownOptions() {
       this.mutatedGenes.clear();
 
       firebaseDb
@@ -112,10 +122,26 @@ export default {
               this.mutatedGenes.add(docData.gene);
             }
           });
-
         });
     },
-    getExperimentalData() {
+    GetFilteredExperimentalData() {
+      this.experimentalData = [];
+
+      var queryResults = firebaseDb
+        .collection("experimental-data")
+        .where("gene", "==", this.mutated_gene_choice)
+        .where("cardiomyopathy_type", "==", this.cardiomyopathy_type_choice);
+
+      // No edge case is needed to check the data exists as the dropdown is dynamically updated and only shows what is available
+      queryResults.get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          let docData = doc.data();
+
+          this.GenerateChart(docData);
+        });
+      });
+    },
+    GetExperimentalData() {
       firebaseDb
         .collection("experimental-data")
         .get()
@@ -131,74 +157,76 @@ export default {
                 docData.x_axis_tick_amount = docData.x_axis_data.length;
               }
 
-              let chart = {
-                chartOptions: {
-                  chart: {
-                    height: 350,
-                    type: "line",
-                    zoom: {
-                      enabled: false,
-                    },
-                  },
-                  dataLabels: {
-                    enabled: false,
-                  },
-                  stroke: {
-                    width: [5, 7, 5],
-                    curve: "straight",
-                    dashArray: [0, 8, 5],
-                  },
-                  title: {
-                    text: docData.chart_title,
-                    align: "left",
-                  },
-                  grid: {
-                    row: {
-                      colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-                      opacity: 0.5,
-                    },
-                  },
-                  xaxis: {
-                    categories: docData.x_axis_data,
-                    tickAmount: docData.x_axis_tick_amount - 1,
-                    title: {
-                      text: docData.x_axis_label,
-                    },
-                  },
-                  yaxis: {
-                    title: {
-                      text: docData.y_axis_label,
-                    },
-                  },
-                  legend: {
-                    position: "top",
-                    horizontalAlign: "right",
-                    floating: true,
-                    offsetY: -25,
-                    offsetX: -5,
-                  },
-                },
-                series: [
-                  {
-                    name: docData.gene,
-                    data: docData.y_axis_data,
-                  },
-                  //   {
-                  //     name: "Laptops",
-                  //     data: [20, 61, 75, 71, 69, 72, 89, 111, 168],
-                  //   },
-                ],
-              };
-
-              this.welcomeMessage =
-                "Welcome to the experimental data chart page.";
-              this.experimentalData.push({ docData, chart });
+              this.GenerateChart(docData);
             });
           }
         })
         .catch((error) => {
           console.log("Error getting documents: ", error);
         });
+    },
+    GenerateChart(docData) {
+      let chart = {
+        chartOptions: {
+          chart: {
+            height: 350,
+            type: "line",
+            zoom: {
+              enabled: false,
+            },
+          },
+          dataLabels: {
+            enabled: false,
+          },
+          stroke: {
+            width: [5, 7, 5],
+            curve: "straight",
+            dashArray: [0, 8, 5],
+          },
+          title: {
+            text: docData.chart_title,
+            align: "left",
+          },
+          grid: {
+            row: {
+              colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+              opacity: 0.5,
+            },
+          },
+          xaxis: {
+            categories: docData.x_axis_data,
+            tickAmount: docData.x_axis_tick_amount - 1,
+            title: {
+              text: docData.x_axis_label,
+            },
+          },
+          yaxis: {
+            title: {
+              text: docData.y_axis_label,
+            },
+          },
+          legend: {
+            position: "top",
+            horizontalAlign: "right",
+            floating: true,
+            offsetY: -25,
+            offsetX: -5,
+          },
+        },
+        series: [
+          {
+            name: docData.gene,
+            data: docData.y_axis_data,
+          },
+          //   {
+          //     name: "Laptops",
+          //     data: [20, 61, 75, 71, 69, 72, 89, 111, 168],
+          //   },
+        ],
+      };
+
+      this.welcomeMessage = "Welcome to the experimental data chart page.";
+      this.experimentalData.push({ docData, chart });
     },
   },
   components: {

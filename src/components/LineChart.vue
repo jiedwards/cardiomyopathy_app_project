@@ -22,6 +22,9 @@
 
           <p><strong> Chart Title: </strong>{{ data.docData.chart_title }}</p>
           <p><strong> Data Source: </strong>{{ data.docData.data_source }}</p>
+          <p><strong> Chart Data Type: </strong>{{ data.docData.chart_data_type }}</p>
+          <p><strong> Gene: </strong>{{ data.docData.gene }}</p>
+
         </li>
       </ul>
     </div>
