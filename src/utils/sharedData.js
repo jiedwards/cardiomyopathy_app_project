@@ -14,7 +14,8 @@ let mutatedGenes = [
 ]
 
 let chartDataTypes = [
-    "TEST1",
+    "Sarcomere Length vs Time",
+    "Calcium Concentration vs Time",
     "TEST2"
 
 ]
