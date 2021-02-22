@@ -28,8 +28,8 @@
                 Cardiomyopathy type
                 <i class="inline-icon material-icons">favorite_border</i>
               </p>
-              <br>
-              <select 
+              <br />
+              <select
                 name="cardiomyopathy_type"
                 id="cardiomyopathy_type"
                 class="form-control"
@@ -46,13 +46,12 @@
               </select>
             </div>
 
-
             <div class="input-field col-md">
               <p>
                 Mutated Gene
                 <i class="inline-icon material-icons">biotech</i>
               </p>
-              <br>
+              <br />
               <select
                 name="gene"
                 id="gene"
@@ -71,7 +70,7 @@
                 Chart Data Type
                 <i class="inline-icon material-icons">show_chart</i>
               </p>
-              <br>
+              <br />
               <select
                 name="chart_data_type"
                 id="chart_data_type"
@@ -276,11 +275,48 @@ export default {
       papa.parse(this.selectedFile, {
         complete: (results) => {
           if (results.data) {
-            for (let i = 1; i < results.data.length; i++) {
-              x_axis_data.push(
-                parseFloat(results.data[i][0]).toFixed(self.decimal_point.value)
+            let tempArray = [];
+            // Edge case for when only two columns are in the spreadsheet.
+            if (results.data[1].length == 2) {
+              for (let i = 1; i < results.data.length; i++) {
+                x_axis_data.push(
+                  parseFloat(results.data[i][0]).toFixed(
+                    self.decimal_point.value
+                  )
+                );
+                tempArray.push(results.data[i][1]);
+              }
+              y_axis_data.push({
+                plot_name: results.data[0][1],
+                data: tempArray,
+              });
+            } else {
+              // Edge case for when three columns are in the spreadsheet.
+              let tempArraySecondCsvColumn = [];
+              let tempArrayThirdCsvColumn = [];
+
+              for (let i = 1; i < results.data.length; i++) {
+                for (let j = 0; j < results.data[i].length; j++) {
+                  if (j == 0) {
+                    x_axis_data.push(
+                      parseFloat(results.data[i][j]).toFixed(
+                        self.decimal_point.value
+                      )
+                    );
+                  } else if (j == 1) {
+                    tempArraySecondCsvColumn.push(results.data[i][j]);
+                  } else if (j == 2) {
+                    tempArrayThirdCsvColumn.push(results.data[i][j]);
+                  }
+                }
+              }
+              y_axis_data.push(
+                {
+                  plot_name: results.data[0][1],
+                  data: tempArraySecondCsvColumn,
+                },
+                { plot_name: results.data[0][2], data: tempArrayThirdCsvColumn }
               );
-              y_axis_data.push(results.data[i][1]);
             }
           }
           this.AddDataToFirebase(event, x_axis_data, y_axis_data);

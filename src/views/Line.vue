@@ -200,21 +200,23 @@ export default {
               offsetX: -5,
             },
           },
-          series: [
-            {
-              name: docData.gene,
-              data: docData.y_axis_data,
-            },
-            //   {
-            //     name: "Laptops",
-            //     data: [20, 61, 75, 71, 69, 72, 89, 111, 168],
-            //   },
-          ],
+          series: this.GetYAxisData(docData),
         };
 
         this.welcomeMessage = "Welcome to the experimental data chart page.";
         this.experimentalDataCharts.push({ docData, chart });
       });
+    },
+    GetYAxisData(docData) {
+      let resultData = [];
+      // Iterate through Y data axis array in firebase and extract data for each line
+      for (let y_axis_data_array of docData.y_axis_data) {
+        resultData.push({
+          name: y_axis_data_array.plot_name,
+          data: y_axis_data_array.data,
+        });
+      }
+      return resultData;
     },
     GetExperimentalDataDropdownOptions() {
       this.mutatedGenes.clear();
@@ -243,7 +245,6 @@ export default {
     OnMutatedGeneDropdownChange(event) {
       this.mutated_gene_choice = event.target.value;
     },
-    
   },
   components: {
     LineChart,
