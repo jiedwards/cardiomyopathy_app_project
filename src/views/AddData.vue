@@ -22,10 +22,71 @@
                 required
               />
             </div>
-            <label for="gene">Mutated Gene</label>
-            <div class="input-field">
-              <i class="material-icons prefix">biotech</i>
-              <input type="text" id="gene" v-model="gene" required />
+
+            <div class="input-field col-md">
+              <p>
+                Cardiomyopathy type
+                <i class="inline-icon material-icons">favorite_border</i>
+              </p>
+              <br>
+              <select 
+                name="cardiomyopathy_type"
+                id="cardiomyopathy_type"
+                class="form-control"
+                @change="onCardiomyopathyTypeDropdownChange"
+                required
+              >
+                <option
+                  v-for="cardiomyopathyType in cardiomyopathyTypes"
+                  :key="cardiomyopathyType"
+                  :value="cardiomyopathyType"
+                >
+                  {{ cardiomyopathyType }}
+                </option>
+              </select>
+            </div>
+
+
+            <div class="input-field col-md">
+              <p>
+                Mutated Gene
+                <i class="inline-icon material-icons">biotech</i>
+              </p>
+              <br>
+              <select
+                name="gene"
+                id="gene"
+                class="form-control"
+                @change="onMutatedGeneDropdownChange"
+                required
+              >
+                <option v-for="gene in mutatedGenes" :key="gene" :value="gene">
+                  {{ gene }}
+                </option>
+              </select>
+            </div>
+
+            <div class="input-field col-md">
+              <p>
+                Chart Data Type
+                <i class="inline-icon material-icons">show_chart</i>
+              </p>
+              <br>
+              <select
+                name="chart_data_type"
+                id="chart_data_type"
+                class="form-control"
+                @change="onChartDataTypeDropdownChange"
+                required
+              >
+                <option
+                  v-for="chartDataType in chartDataTypes"
+                  :key="chartDataType"
+                  :value="chartDataType"
+                >
+                  {{ chartDataType }}
+                </option>
+              </select>
             </div>
 
             <h5>Chart Data</h5>
@@ -158,6 +219,11 @@
 
 <script>
 import { firebaseDb, firebaseAuth } from "../utils/firebase";
+import {
+  cardiomyopathyTypes,
+  mutatedGenes,
+  chartDataTypes,
+} from "../utils/sharedData";
 import { ref } from "vue";
 
 export default {
@@ -172,6 +238,11 @@ export default {
       y_axis_tick_amount: null,
       decimal_point: ref(""),
       selectedFile: null,
+      cardiomyopathy_type: ref(""),
+      chart_data_type: ref(""),
+      cardiomyopathyTypes,
+      mutatedGenes,
+      chartDataTypes,
     };
   },
   methods: {
@@ -187,6 +258,15 @@ export default {
     onDecimalOptionChange(event) {
       this.decimal_point = event.target.value;
       console.log(this.decimal_point);
+    },
+    onChartDataTypeDropdownChange(event) {
+      this.chart_data_type = event.target.value;
+    },
+    onCardiomyopathyTypeDropdownChange(event) {
+      this.cardiomyopathy_type = event.target.value;
+    },
+    onMutatedGeneDropdownChange(event) {
+      this.gene = event.target.value;
     },
     SubmitNewData(event) {
       const papa = require("papaparse");
@@ -207,33 +287,33 @@ export default {
         },
       });
     },
-    
+
     AddDataToFirebase(event, x_axis_data, y_axis_data) {
       firebaseDb
-            .collection("experimental-data")
-            .add({
-              user_id: firebaseAuth.currentUser.uid,
-              chart_title: self.chart_title.value,
-              data_source: self.data_source.value,
-              gene: self.gene.value,
-              x_axis_label: self.x_axis_label.value,
-              y_axis_label: self.y_axis_label.value,
-              x_axis_tick_amount: self.x_axis_tick_amount.value,
-              y_axis_tick_amount: self.y_axis_tick_amount.value,
-              x_axis_data: x_axis_data,
-              y_axis_data: y_axis_data,
-              date_created: new Date().toDateString(),
-            })
-            .then(() => {
-              alert(
-                "Data successfully added! The input form will now be cleared."
-              );
-              event.target.reset();
-            })
-            .catch((error) => {
-              alert("Error adding data to db: ", error);
-            });
-    }
+        .collection("experimental-data")
+        .add({
+          user_id: firebaseAuth.currentUser.uid,
+          chart_title: self.chart_title.value,
+          data_source: self.data_source.value,
+          chart_data_type: self.chart_data_type.value,
+          cardiomyopathy_type: self.cardiomyopathy_type.value,
+          gene: self.gene.value,
+          x_axis_label: self.x_axis_label.value,
+          y_axis_label: self.y_axis_label.value,
+          x_axis_tick_amount: self.x_axis_tick_amount.value,
+          y_axis_tick_amount: self.y_axis_tick_amount.value,
+          x_axis_data: x_axis_data,
+          y_axis_data: y_axis_data,
+          date_created: new Date().toDateString(),
+        })
+        .then(() => {
+          alert("Data successfully added! The input form will now be cleared.");
+          event.target.reset();
+        })
+        .catch((error) => {
+          alert("Error adding data to db: ", error);
+        });
+    },
   },
 };
 </script>
