@@ -275,47 +275,39 @@ export default {
       papa.parse(this.selectedFile, {
         complete: (results) => {
           if (results.data) {
-            let tempArray = [];
-            // Edge case for when only two columns are in the spreadsheet.
-            if (results.data[1].length == 2) {
-              for (let i = 1; i < results.data.length; i++) {
-                x_axis_data.push(
-                  parseFloat(results.data[i][0]).toFixed(
-                    self.decimal_point.value
-                  )
-                );
-                tempArray.push(results.data[i][1]);
-              }
-              y_axis_data.push({
-                plot_name: results.data[0][1],
-                data: tempArray,
-              });
-            } else {
-              // Edge case for when three columns are in the spreadsheet.
-              let tempArraySecondCsvColumn = [];
-              let tempArrayThirdCsvColumn = [];
+            let secondCsvColumnData = [];
+            let thirdCsvColumnData = [];
 
-              for (let i = 1; i < results.data.length; i++) {
-                for (let j = 0; j < results.data[i].length; j++) {
-                  if (j == 0) {
-                    x_axis_data.push(
-                      parseFloat(results.data[i][j]).toFixed(
-                        self.decimal_point.value
-                      )
-                    );
-                  } else if (j == 1) {
-                    tempArraySecondCsvColumn.push(results.data[i][j]);
-                  } else if (j == 2) {
-                    tempArrayThirdCsvColumn.push(results.data[i][j]);
-                  }
+            for (let i = 1; i < results.data.length; i++) {
+              for (let j = 0; j < results.data[i].length; j++) {
+                if (j == 0) {
+                  x_axis_data.push(
+                    parseFloat(results.data[i][j]).toFixed(
+                      self.decimal_point.value
+                    )
+                  );
+                } else if (j == 1) {
+                  secondCsvColumnData.push(results.data[i][j]);
+                } else if (j == 2) {
+                  thirdCsvColumnData.push(results.data[i][j]);
                 }
               }
+            }
+
+            // Checks whether there is any data in a third column.
+            if (thirdCsvColumnData.length == 0) {
+              y_axis_data.push({
+                plot_name: results.data[0][1],
+                data: secondCsvColumnData,
+              });
+            } else {
               y_axis_data.push(
                 {
                   plot_name: results.data[0][1],
-                  data: tempArraySecondCsvColumn,
+                  data: secondCsvColumnData,
                 },
-                { plot_name: results.data[0][2], data: tempArrayThirdCsvColumn }
+                { plot_name: results.data[0][2],
+                 data: thirdCsvColumnData }
               );
             }
           }
