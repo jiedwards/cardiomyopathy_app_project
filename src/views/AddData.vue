@@ -224,6 +224,7 @@ import {
   chartDataTypes,
 } from "../utils/sharedData";
 import { ref } from "vue";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -306,8 +307,7 @@ export default {
                   plot_name: results.data[0][1],
                   data: secondCsvColumnData,
                 },
-                { plot_name: results.data[0][2],
-                 data: thirdCsvColumnData }
+                { plot_name: results.data[0][2], data: thirdCsvColumnData }
               );
             }
           }
@@ -335,7 +335,7 @@ export default {
           date_created: new Date().toDateString(),
         })
         .then(() => {
-          alert("Data successfully added! The input form will now be cleared.");
+          Swal.fire("Success", "Data successfully added! The input form will now be cleared.", "success");
           event.target.reset();
         })
         .catch((error) => {
