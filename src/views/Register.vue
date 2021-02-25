@@ -90,7 +90,6 @@ export default {
             })
             .then(() => {
               firebaseAuth.currentUser.sendEmailVerification();
-              console.log("email sent");
               alert("An email will be sent in order for you to authenticate your account.");
               Swal.fire("Registered successfully.", "An email will be sent in order for you to authenticate your account.", "success");
               firebaseAuth
