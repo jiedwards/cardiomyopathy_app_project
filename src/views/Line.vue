@@ -77,13 +77,16 @@
 import LineChart from "@/components/LineChart";
 import { ref } from "vue";
 import { firebaseDb } from "../utils/firebase";
+import {
+  GenerateCharts
+} from "../utils/sharedFunctionality";
 
 export default {
   data() {
     return {
       welcomeMessage: ref(""),
       experimentalDataCharts: ref([]),
-      firebaseApiExperimentalDataCache: ref([]),
+      ExperimentalDataApiCache: ref([]),
       cardiomyopathyTypes: ref(new Set()),
       mutatedGenes: ref(new Set()),
       cardiomyopathy_type_choice: ref(""),
@@ -108,21 +111,20 @@ export default {
           } else {
             querySnapshot.forEach((doc) => {
               let docData = doc.data();
+              this.ExperimentalDataApiCache.push(docData);
               // Edge case for when user wants to display total amount of ticks
               if (docData.x_axis_tick_amount == "max") {
                 docData.x_axis_tick_amount = docData.x_axis_data.length;
               }
-
-              this.firebaseApiExperimentalDataCache.push(docData);
             });
 
             // API response is cached to reduce firestore API calls.
             localStorage.setItem(
               "firebaseAPIResponseCache",
-              JSON.stringify(this.firebaseApiExperimentalDataCache)
+              JSON.stringify(this.ExperimentalDataApiCache)
             );
 
-            this.GenerateCharts(this.firebaseApiExperimentalDataCache);
+            this.experimentalDataCharts = GenerateCharts(this.ExperimentalDataApiCache);
             // Chart options must be populated after cache is saved in order to reduce API calls.
             this.GetExperimentalDataDropdownOptions();
           }
@@ -132,7 +134,8 @@ export default {
         });
     },
     GetFilteredExperimentalData() {
-      this.firebaseApiExperimentalDataCache = [];
+      // Firebase API data cache must be reset, it currently contains all of the graphs.
+      this.ExperimentalDataApiCache = [];
 
       var firebaseAPIResponseCache = JSON.parse(
         localStorage.getItem("firebaseAPIResponseCache")
@@ -144,77 +147,10 @@ export default {
           docData.gene == this.mutated_gene_choice &&
           docData.cardiomyopathy_type == this.cardiomyopathy_type_choice
         ) {
-          this.firebaseApiExperimentalDataCache.push(docData);
+          this.ExperimentalDataApiCache.push(docData);
         }
       });
-      this.GenerateCharts(this.firebaseApiExperimentalDataCache);
-    },
-    GenerateCharts(firebaseApiExperimentalDataCache) {
-      this.experimentalDataCharts = [];
-
-      firebaseApiExperimentalDataCache.forEach((docData) => {
-        let chart = {
-          chartOptions: {
-            chart: {
-              height: 350,
-              type: "line",
-              zoom: {
-                enabled: false,
-              },
-            },
-            dataLabels: {
-              enabled: false,
-            },
-            stroke: {
-              width: [5, 7, 5],
-              curve: "straight",
-              dashArray: [0, 8, 5],
-            },
-            title: {
-              text: docData.chart_title,
-              align: "left",
-            },
-            grid: {
-              row: {
-                colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-                opacity: 0.5,
-              },
-            },
-            xaxis: {
-              categories: docData.x_axis_data,
-              tickAmount: docData.x_axis_tick_amount - 1,
-              title: {
-                text: docData.x_axis_label,
-              },
-            },
-            yaxis: {
-              title: {
-                text: docData.y_axis_label,
-              },
-            },
-            legend: {
-              position: "top",
-              horizontalAlign: "right",
-              floating: true,
-              offsetY: -25,
-              offsetX: -5,
-            },
-          },
-          series: [
-            {
-              name: docData.gene,
-              data: docData.y_axis_data,
-            },
-            //   {
-            //     name: "Laptops",
-            //     data: [20, 61, 75, 71, 69, 72, 89, 111, 168],
-            //   },
-          ],
-        };
-
-        this.welcomeMessage = "Welcome to the experimental data chart page.";
-        this.experimentalDataCharts.push({ docData, chart });
-      });
+      this.experimentalDataCharts = GenerateCharts(this.ExperimentalDataApiCache);
     },
     GetExperimentalDataDropdownOptions() {
       this.mutatedGenes.clear();
@@ -243,7 +179,6 @@ export default {
     OnMutatedGeneDropdownChange(event) {
       this.mutated_gene_choice = event.target.value;
     },
-    
   },
   components: {
     LineChart,

@@ -50,6 +50,7 @@
 import { ref } from "vue";
 import { firebaseAuth } from "../utils/firebase";
 import Modal from '@/components/Modal.vue'
+import Swal from "sweetalert2";
 
 export default {
   name: 'Home',
@@ -93,12 +94,18 @@ export default {
         .catch((err) => alert(err.message));
     },
     ForgotPassword() {
-      if (confirm(`Would you like a password reset email to be sent to: ${this.email} `)) {
+      if (
+        confirm(
+          `Would you like a password reset email to be sent to: ${this.email} `
+        )
+      ) {
         firebaseAuth
           .sendPasswordResetEmail(this.email)
           .then(() => {
-            alert(
-              "A password reset email has been sent to the email address entered above."
+            Swal.fire(
+              "Forgotten password email sent.",
+              "A password reset email has been sent to the email address entered above.",
+              "success"
             );
           })
           .catch((err) => alert(err.message));
