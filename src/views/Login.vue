@@ -53,18 +53,9 @@ import Modal from '@/components/Modal.vue'
 import Swal from "sweetalert2";
 
 export default {
-  name: 'Home',
   components: {
     Modal, 
   },
-  methods: {
-    openModal(){
-      this.$refs.modal.show();
-    },
-  },
-};
-
-export default {
   data() {
     return {
       email: ref(""),
@@ -110,6 +101,9 @@ export default {
           })
           .catch((err) => alert(err.message));
       }
+    },
+    openModal(){
+      this.$refs.modal.show();
     },
   },
 };
