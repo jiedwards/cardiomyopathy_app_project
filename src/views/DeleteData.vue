@@ -47,6 +47,7 @@
 <script>
 import { ref } from "vue";
 import { firebaseDb, firebaseAuth } from "../utils/firebase";
+import Swal from "sweetalert2";
 
 export default {
   mounted: function () {
@@ -86,21 +87,29 @@ export default {
     }
 
     function DeleteData(chartDocumentId) {
-      if (
-        confirm(`Are you sure you would like to delete this experimental data?`)
-      ) {
-        firebaseDb
-          .collection("experimental-data")
-          .doc(chartDocumentId)
-          .delete()
-          .then(() => {
-            alert("Data successfully deleted!");
-            this.GetAllUserCharts();
-          })
-          .catch((error) => {
-            alert("Error deleting data from db: ", error);
-          });
-      }
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          firebaseDb
+            .collection("experimental-data")
+            .doc(chartDocumentId)
+            .delete()
+            .then(() => {
+              Swal.fire("Deleted!", "Data successfully deleted!", "success");
+              this.GetAllUserCharts();
+            })
+            .catch((error) => {
+              alert("Error deleting data from db: ", error);
+            });
+        }
+      });
     }
 
     return { welcomeMessage, chartList, GetAllUserCharts, DeleteData };

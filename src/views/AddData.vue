@@ -28,8 +28,8 @@
                 Cardiomyopathy type
                 <i class="inline-icon material-icons">favorite_border</i>
               </p>
-              <br>
-              <select 
+              <br />
+              <select
                 name="cardiomyopathy_type"
                 id="cardiomyopathy_type"
                 class="form-control"
@@ -46,13 +46,12 @@
               </select>
             </div>
 
-
             <div class="input-field col-md">
               <p>
                 Mutated Gene
                 <i class="inline-icon material-icons">biotech</i>
               </p>
-              <br>
+              <br />
               <select
                 name="gene"
                 id="gene"
@@ -71,7 +70,7 @@
                 Chart Data Type
                 <i class="inline-icon material-icons">show_chart</i>
               </p>
-              <br>
+              <br />
               <select
                 name="chart_data_type"
                 id="chart_data_type"
@@ -225,6 +224,7 @@ import {
   chartDataTypes,
 } from "../utils/sharedData";
 import { ref } from "vue";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -276,11 +276,39 @@ export default {
       papa.parse(this.selectedFile, {
         complete: (results) => {
           if (results.data) {
+            let secondCsvColumnData = [];
+            let thirdCsvColumnData = [];
+
             for (let i = 1; i < results.data.length; i++) {
-              x_axis_data.push(
-                parseFloat(results.data[i][0]).toFixed(self.decimal_point.value)
+              for (let j = 0; j < results.data[i].length; j++) {
+                if (j == 0) {
+                  x_axis_data.push(
+                    parseFloat(results.data[i][j]).toFixed(
+                      self.decimal_point.value
+                    )
+                  );
+                } else if (j == 1) {
+                  secondCsvColumnData.push(results.data[i][j]);
+                } else if (j == 2) {
+                  thirdCsvColumnData.push(results.data[i][j]);
+                }
+              }
+            }
+
+            // Checks whether there is any data in a third column.
+            if (thirdCsvColumnData.length == 0) {
+              y_axis_data.push({
+                plot_name: results.data[0][1],
+                data: secondCsvColumnData,
+              });
+            } else {
+              y_axis_data.push(
+                {
+                  plot_name: results.data[0][1],
+                  data: secondCsvColumnData,
+                },
+                { plot_name: results.data[0][2], data: thirdCsvColumnData }
               );
-              y_axis_data.push(results.data[i][1]);
             }
           }
           this.AddDataToFirebase(event, x_axis_data, y_axis_data);
@@ -307,7 +335,7 @@ export default {
           date_created: new Date().toDateString(),
         })
         .then(() => {
-          alert("Data successfully added! The input form will now be cleared.");
+          Swal.fire("Success", "Data successfully added! The input form will now be cleared.", "success");
           event.target.reset();
         })
         .catch((error) => {

@@ -62,6 +62,7 @@
 <script>
 import { ref } from "vue";
 import { firebaseAuth, firebaseDb } from "../utils/firebase.js";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -89,8 +90,8 @@ export default {
             })
             .then(() => {
               firebaseAuth.currentUser.sendEmailVerification();
-              console.log("email sent");
               alert("An email will be sent in order for you to authenticate your account.");
+              Swal.fire("Registered successfully.", "An email will be sent in order for you to authenticate your account.", "success");
               firebaseAuth
                 .signOut()
                 .then(() => {
