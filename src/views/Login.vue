@@ -38,11 +38,30 @@
       </div>
     </div>
   </div>
+  <div class="home">
+    <button @click="openModal()">Click Here For Help</button>
+    <Modal ref="modal">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
+    </Modal>
+  </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import { firebaseAuth } from "../utils/firebase";
+import Modal from '@/components/Modal.vue'
+
+export default {
+  name: 'Home',
+  components: {
+    Modal, 
+  },
+  methods: {
+    openModal(){
+      this.$refs.modal.show();
+    },
+  },
+};
 
 export default {
   data() {
