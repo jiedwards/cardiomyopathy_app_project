@@ -6,15 +6,17 @@
         <div class="col">
           <apexchart
             type="line"
-            height="400"
-            width="600"
+            height="450"
+            width="700"
             :options="data.chart.chartOptions"
             :series="data.chart.series"
           ></apexchart>
         </div>
 
         <div class="col">
-          <h6>Extra details</h6>
+          
+          <h5>Chart details: {{ data.docData.chart_data_type }}</h5>
+          <br><br>
           <p><strong> Gene: </strong>{{ data.docData.gene }}</p>
           <p><strong> Data Source: </strong>{{ data.docData.data_source }}</p>
           <p>

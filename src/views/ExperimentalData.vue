@@ -1,16 +1,14 @@
 <template>
-<div class="container">
-  <div class="justify-content-center">
-    <h3>
-      All Line Charts
-      <a @click="openModal()" class="btn-floating btn-sm grey float-right">
-        <i class="material-icons">help_outline</i>
-      </a>
-    </h3>
-  </div>
+  <div class="container-fluid">
+    <div class="justify-content-center">
+      <h3>
+        All Line Charts
+        <a @click="openModal()" class="btn-floating btn-sm grey float-right">
+          <i class="material-icons">help_outline</i>
+        </a>
+      </h3>
+    </div>
     {{ welcomeMessage }}
-  </div>
-
 
     <div id="filterDropdown" class="container">
       <h5>Data filters</h5>
@@ -21,7 +19,6 @@
               Cardiomyopathy type
               <i class="inline-icon material-icons">favorite_border</i>
             </p>
-            <br />
             <select
               name="cardiomyopathy_type_choice"
               id="cardiomyopathy_type_choice"
@@ -45,7 +42,6 @@
               Mutated Gene
               <i class="inline-icon material-icons">biotech</i>
             </p>
-            <br />
             <select
               name="mutated_gene_choice"
               id="mutated_gene_choice"
@@ -73,33 +69,46 @@
       </div>
     </div>
 
-    <br /><br />
-    <div class="container">
-    <chart
-      :experimentalData="experimentalDataCharts"
-      class="center"
-    ></chart>
+    <div class="row d-flex justify-content-center">
+      <div v-if="!isHidden" class="col-4">
+        <hpo-api-data :diseaseData="diseaseData" class="center"></hpo-api-data>
+      </div>
+      <div class="col-8">
+        <chart
+          :experimentalData="experimentalDataCharts"
+          class="center"
+        ></chart>
+      </div>
     </div>
-  <Modal ref="modal" />
+
+    <Modal ref="modal" />
+  </div>
 </template>
 
 <script>
 import Chart from "@/components/Chart";
+import HpoApiData from "@/components/HpoApiData";
 import { ref } from "vue";
 import { firebaseDb } from "../utils/firebase";
-import { GenerateCharts } from "../utils/sharedFunctionality";
+import {
+  GenerateCharts,
+  ApiGeneDataRequest,
+} from "../utils/sharedFunctionality";
 import Modal from "@/components/Modal.vue";
 
 export default {
   data() {
     return {
       welcomeMessage: ref(""),
+      diseaseData: [],
+      error: ref(null),
       experimentalDataCharts: ref([]),
       ExperimentalDataApiCache: ref([]),
       cardiomyopathyTypes: ref(new Set()),
       mutatedGenes: ref(new Set()),
       cardiomyopathy_type_choice: ref(""),
       mutated_gene_choice: ref(""),
+      isHidden: true,
     };
   },
   beforeMount() {
@@ -164,6 +173,11 @@ export default {
       this.experimentalDataCharts = GenerateCharts(
         this.ExperimentalDataApiCache
       );
+
+      let api_disease_id = this.ExperimentalDataApiCache[0].api_disease_id;
+      console.log(api_disease_id);
+      this.GetGeneData(api_disease_id);
+      this.isHidden = !this.isHidden;
     },
     GetExperimentalDataDropdownOptions() {
       this.mutatedGenes.clear();
@@ -185,6 +199,9 @@ export default {
         }
       });
     },
+    async GetGeneData(api_disease_id) {
+      this.diseaseData = await ApiGeneDataRequest(api_disease_id);
+    },
     openModal() {
       this.$refs.modal.show();
     },
@@ -194,11 +211,13 @@ export default {
     },
     OnMutatedGeneDropdownChange(event) {
       this.mutated_gene_choice = event.target.value;
+      this.isHidden = true;
     },
   },
   components: {
     Chart,
     Modal,
+    HpoApiData,
   },
 };
 </script>

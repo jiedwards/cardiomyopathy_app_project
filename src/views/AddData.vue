@@ -3,10 +3,14 @@
     <div class="card-group col s12 m6 l4 offset-m2 offset-l4">
       <div class="card">
         <div class="card-action red lighten-2 white-text">
-          <h3>Add experimental data
-            <a @click="openModal()" class="btn-floating btn-sm grey float-right">
+          <h3>
+            Add experimental data
+            <a
+              @click="openModal()"
+              class="btn-floating btn-sm grey float-right"
+            >
               <i class="material-icons">help_outline</i>
-              </a>
+            </a>
           </h3>
         </div>
         <form @submit.prevent="SubmitNewData">
@@ -227,6 +231,7 @@ import {
   cardiomyopathyTypes,
   mutatedGenes,
   chartDataTypes,
+  apiIdGeneMap,
 } from "../utils/sharedData";
 import { ref } from "vue";
 import Modal from "@/components/Modal.vue";
@@ -326,6 +331,13 @@ export default {
     },
 
     AddDataToFirebase(event, x_axis_data, y_axis_data) {
+      let api_disease_id = "";
+
+      if (this.cardiomyopathy_type == "Hypertrophic cardiomyopathy(HCM)") {
+        api_disease_id = apiIdGeneMap[self.gene.value];
+      }
+      console.log(api_disease_id);
+
       firebaseDb
         .collection("experimental-data")
         .add({
@@ -335,6 +347,7 @@ export default {
           chart_data_type: self.chart_data_type.value,
           cardiomyopathy_type: self.cardiomyopathy_type.value,
           gene: self.gene.value,
+          api_disease_id: api_disease_id,
           x_axis_label: self.x_axis_label.value,
           y_axis_label: self.y_axis_label.value,
           x_axis_tick_amount: self.x_axis_tick_amount.value,

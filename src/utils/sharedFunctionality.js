@@ -5,7 +5,6 @@ function GenerateCharts(ExperimentalData) {
         let chart = {
             chartOptions: {
                 chart: {
-                    height: 350,
                     type: "line",
                     zoom: {
                         enabled: false,
@@ -57,6 +56,7 @@ function GenerateCharts(ExperimentalData) {
 
     return experimentalDataCharts;
 }
+
 function GetYAxisData(docData) {
     let resultData = [];
     // Iterate through Y data axis array in firebase and extract data for each line
@@ -69,4 +69,12 @@ function GetYAxisData(docData) {
     return resultData;
 }
 
-export { GenerateCharts }
+async function ApiGeneDataRequest(api_disease_id) {
+    const apiUrl = `https://hpo.jax.org/api/hpo/disease/OMIM:${api_disease_id}`;
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+
+    return data;
+}
+
+export { GenerateCharts, ApiGeneDataRequest }
