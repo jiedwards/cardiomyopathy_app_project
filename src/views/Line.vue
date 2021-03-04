@@ -65,16 +65,49 @@
       </div>
     </div>
 
-    <br /><br />
+    <br />
+    <br />
     <line-chart
       :experimentalData="experimentalDataCharts"
       class="center"
     ></line-chart>
+
+
+    <h1>Extra Disease Information </h1> 
+    <div v-if="error">{{error}}</div>
+    {{disease_list.disease.diseaseId}}
+    <el-row>
+      <el-col
+        :span="8"
+        v-for="disease in disease_list.catTermsMap"
+        :key="disease.catLabel"
+        :offset="index > 0 ? 2 : 0"
+      >
+
+        <div v-if="disease.catLabel=='Cardiovascular'">
+        <div style="padding: 14px;" class="bottom">
+          <span>Type: {{ disease.catLabel }}</span>
+        </div>
+        <el-col
+        :span="8"
+        v-for="terms in disease.terms"
+        :key="terms.ontologyId"
+        :offset="index > 0 ? 2 : 0"
+      >
+      <h5>{{terms.name}}</h5>
+      {{terms.definition}}
+      <br>
+      <br>
+      </el-col>
+      </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 import LineChart from "@/components/LineChart";
+import getList from "@/composables/getList";
 import { ref } from "vue";
 import { firebaseDb } from "../utils/firebase";
 import {
@@ -85,6 +118,8 @@ export default {
   data() {
     return {
       welcomeMessage: ref(""),
+      disease_list: ref([]),
+      error: ref(null),
       experimentalDataCharts: ref([]),
       ExperimentalDataApiCache: ref([]),
       cardiomyopathyTypes: ref(new Set()),
@@ -172,6 +207,15 @@ export default {
         }
       });
     },
+
+    setup(){
+    const {disease_list, error, populateDiseaseList} = getList();
+
+    populateDiseaseList();
+
+    return {disease_list, error};
+  },
+     
     OnCardiomyopathyTypeDropdownChange(event) {
       this.cardiomyopathy_type_choice = event.target.value;
       this.GetExperimentalDataDropdownOptions();
