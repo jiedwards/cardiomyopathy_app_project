@@ -4,7 +4,7 @@ import Login from '@/views/Login';
 import Register from '@/views/Register';
 import Dashboard from '@/views/Dashboard';
 import AddData from '@/views/AddData';
-import Line from '@/views/Line'; 
+import ExperimentalData from '@/views/ExperimentalData'; 
 import { firebase } from '../utils/firebase';
 import DeleteData from '@/views/DeleteData';
 
@@ -55,9 +55,9 @@ let routes = [
     }
   },
   {
-    path: '/line-chart',
-    name: 'LineChart',
-    component: Line,
+    path: '/experimental-data',
+    name: 'ExperimentalData',
+    component: ExperimentalData,
     meta: {
       requiresAuth: true
     }

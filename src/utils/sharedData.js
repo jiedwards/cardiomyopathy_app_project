@@ -15,9 +15,11 @@ let mutatedGenes = [
 
 let chartDataTypes = [
     "Sarcomere Length vs Time",
-    "Calcium Concentration vs Time",
-    "TEST2"
-
+    "Force vs Calcium concentration",
+    "Tension vs Calcium concentration",
+    "Sarcomere Shortening vs Time",
+    "Velocity vs Calcium concentration",
+    "Sliding velocity vs Calcium concentration"
 ]
 
 export { cardiomyopathyTypes, mutatedGenes, chartDataTypes };

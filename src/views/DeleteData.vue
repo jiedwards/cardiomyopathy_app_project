@@ -5,17 +5,20 @@
     {{ welcomeMessage }}
     <table style="width: 100%">
       <tr>
-        <th>User ID</th>
-        <th>Title</th>
-        <th>Data</th>
+        <th>Cardiomyopathy Type</th>
         <th>Gene</th>
-        <th>Date</th>
+        <th>Data Type</th>
+        <th>Data Source</th>
+        <th>Date Added</th>
         <th>Delete</th>
       </tr>
 
       <tr v-for="chart in chartList" :key="chart.chartOptions">
         <td>
-          {{ chart[1].user_id }}
+          {{ chart[1].cardiomyopathy_type }}
+        </td>
+        <td>
+          {{ chart[1].gene }}
         </td>
         <td>
           {{ chart[1].chart_title }}
@@ -23,9 +26,7 @@
         <td>
           {{ chart[1].data_source }}
         </td>
-        <td>
-          {{ chart[1].gene }}
-        </td>
+        
         <td>
           {{ chart[1].date_created }}
         </td>
