@@ -1,9 +1,14 @@
 <template>
   <div class="container">
-    <div class="col s12 m6 l4 offset-m2 offset-l4">
+    <div class="col s10 m6 l4 offset-m2 offset-l4">
       <div class="card">
         <div class="card-action red lighten-2 white-text">
-          <h3>Login</h3>
+          <h3>
+            Login
+            <a @click="openModal()" class="btn-floating btn-sm grey float-right">
+              <i class="material-icons">help_outline</i>
+              </a>
+          </h3>
         </div>
         <form @submit.prevent="Login">
           <div class="card-content">
@@ -38,23 +43,18 @@
       </div>
     </div>
   </div>
-  <div class="home">
-    <button @click="openModal()">Click Here For Help</button>
-    <Modal ref="modal">
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
-    </Modal>
-  </div>
+  <Modal ref="modal"/>
 </template>
 
 <script>
 import { ref } from "vue";
 import { firebaseAuth } from "../utils/firebase";
-import Modal from '@/components/Modal.vue'
+import Modal from "@/components/Modal.vue";
 import Swal from "sweetalert2";
 
 export default {
   components: {
-    Modal, 
+    Modal,
   },
   data() {
     return {
@@ -102,7 +102,7 @@ export default {
           .catch((err) => alert(err.message));
       }
     },
-    openModal(){
+    openModal() {
       this.$refs.modal.show();
     },
   },

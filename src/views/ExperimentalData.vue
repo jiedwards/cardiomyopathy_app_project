@@ -1,11 +1,17 @@
 <template>
-  <h3>All Line Charts</h3>
-  <div>
+  <div class="container-fluid">
+    <div class="justify-content-center">
+      <h3>
+        All Line Charts
+        <a @click="openModal()" class="btn-floating btn-sm grey float-right">
+          <i class="material-icons">help_outline</i>
+        </a>
+      </h3>
+    </div>
     {{ welcomeMessage }}
 
-    <br /><br />
-
-    <div class="container">
+    <div id="filterDropdown" class="container">
+      <h5>Data filters</h5>
       <div class="row justify-content-center">
         <form @submit.prevent="GetFilteredExperimentalData">
           <div class="input-field col-md">
@@ -13,7 +19,6 @@
               Cardiomyopathy type
               <i class="inline-icon material-icons">favorite_border</i>
             </p>
-            <br />
             <select
               name="cardiomyopathy_type_choice"
               id="cardiomyopathy_type_choice"
@@ -37,7 +42,6 @@
               Mutated Gene
               <i class="inline-icon material-icons">biotech</i>
             </p>
-            <br />
             <select
               name="mutated_gene_choice"
               id="mutated_gene_choice"
@@ -65,60 +69,38 @@
       </div>
     </div>
 
-    <br />
-    <br />
-    <line-chart
-      :experimentalData="experimentalDataCharts"
-      class="center"
-    ></line-chart>
-
-
-    <h1>Extra Disease Information </h1> 
-    <div v-if="error">{{error}}</div>
-    {{disease_list.disease.diseaseId}}
-    <el-row>
-      <el-col
-        :span="8"
-        v-for="disease in disease_list.catTermsMap"
-        :key="disease.catLabel"
-        :offset="index > 0 ? 2 : 0"
-      >
-
-        <div v-if="disease.catLabel=='Cardiovascular'">
-        <div style="padding: 14px;" class="bottom">
-          <span>Type: {{ disease.catLabel }}</span>
-        </div>
-        <el-col
-        :span="8"
-        v-for="terms in disease.terms"
-        :key="terms.ontologyId"
-        :offset="index > 0 ? 2 : 0"
-      >
-      <h5>{{terms.name}}</h5>
-      {{terms.definition}}
-      <br>
-      <br>
-      </el-col>
+    <div class="row d-flex justify-content-center">
+      <div v-if="!isHidden" class="col-4">
+        <hpo-api-data :diseaseData="diseaseData" class="center"></hpo-api-data>
       </div>
-      </el-col>
-    </el-row>
+      <div class="col-8">
+        <chart
+          :experimentalData="experimentalDataCharts"
+          class="center"
+        ></chart>
+      </div>
+    </div>
+
+    <Modal ref="modal" />
   </div>
 </template>
 
 <script>
-import LineChart from "@/components/LineChart";
-import getList from "@/composables/getList";
+import Chart from "@/components/Chart";
+import HpoApiData from "@/components/HpoApiData";
 import { ref } from "vue";
 import { firebaseDb } from "../utils/firebase";
 import {
-  GenerateCharts
+  GenerateCharts,
+  ApiGeneDataRequest,
 } from "../utils/sharedFunctionality";
+import Modal from "@/components/Modal.vue";
 
 export default {
   data() {
     return {
       welcomeMessage: ref(""),
-      disease_list: ref([]),
+      diseaseData: [],
       error: ref(null),
       experimentalDataCharts: ref([]),
       ExperimentalDataApiCache: ref([]),
@@ -126,6 +108,7 @@ export default {
       mutatedGenes: ref(new Set()),
       cardiomyopathy_type_choice: ref(""),
       mutated_gene_choice: ref(""),
+      isHidden: true,
     };
   },
   beforeMount() {
@@ -159,7 +142,9 @@ export default {
               JSON.stringify(this.ExperimentalDataApiCache)
             );
 
-            this.experimentalDataCharts = GenerateCharts(this.ExperimentalDataApiCache);
+            this.experimentalDataCharts = GenerateCharts(
+              this.ExperimentalDataApiCache
+            );
             // Chart options must be populated after cache is saved in order to reduce API calls.
             this.GetExperimentalDataDropdownOptions();
           }
@@ -185,7 +170,14 @@ export default {
           this.ExperimentalDataApiCache.push(docData);
         }
       });
-      this.experimentalDataCharts = GenerateCharts(this.ExperimentalDataApiCache);
+      this.experimentalDataCharts = GenerateCharts(
+        this.ExperimentalDataApiCache
+      );
+
+      let api_disease_id = this.ExperimentalDataApiCache[0].api_disease_id;
+      console.log(api_disease_id);
+      this.GetGeneData(api_disease_id);
+      this.isHidden = !this.isHidden;
     },
     GetExperimentalDataDropdownOptions() {
       this.mutatedGenes.clear();
@@ -207,25 +199,25 @@ export default {
         }
       });
     },
-
-    setup(){
-    const {disease_list, error, populateDiseaseList} = getList();
-
-    populateDiseaseList();
-
-    return {disease_list, error};
-  },
-     
+    async GetGeneData(api_disease_id) {
+      this.diseaseData = await ApiGeneDataRequest(api_disease_id);
+    },
+    openModal() {
+      this.$refs.modal.show();
+    },
     OnCardiomyopathyTypeDropdownChange(event) {
       this.cardiomyopathy_type_choice = event.target.value;
       this.GetExperimentalDataDropdownOptions();
     },
     OnMutatedGeneDropdownChange(event) {
       this.mutated_gene_choice = event.target.value;
+      this.isHidden = true;
     },
   },
   components: {
-    LineChart,
+    Chart,
+    Modal,
+    HpoApiData,
   },
 };
 </script>

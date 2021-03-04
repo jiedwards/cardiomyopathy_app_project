@@ -1,6 +1,6 @@
 let cardiomyopathyTypes = [
-    "Dilated cardiomyopathy(DCM)",
     "Hypertrophic cardiomyopathy(HCM)",
+    "Dilated cardiomyopathy(DCM)",
     "Restrictive cardiomyopathy(RCM)",
     "Left Ventricular Non - compaction(LVNC)",
     "Arrhythmogenic Right Ventricular Dysplasia(ARVD)"
@@ -13,11 +13,20 @@ let mutatedGenes = [
     "MYBPC3"
 ]
 
+let apiIdGeneMap = {
+    "TPM1": "115196",
+    "MYBPC3": "115197",
+    "MYH": "192600",
+    "TNNT": "115195"
+}
+
 let chartDataTypes = [
     "Sarcomere Length vs Time",
-    "Calcium Concentration vs Time",
-    "TEST2"
-
+    "Force vs Calcium concentration",
+    "Tension vs Calcium concentration",
+    "Sarcomere Shortening vs Time",
+    "Velocity vs Calcium concentration",
+    "Sliding velocity vs Calcium concentration"
 ]
 
-export { cardiomyopathyTypes, mutatedGenes, chartDataTypes };
+export { cardiomyopathyTypes, mutatedGenes, chartDataTypes, apiIdGeneMap };
