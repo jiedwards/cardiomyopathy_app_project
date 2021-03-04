@@ -3,7 +3,15 @@
     <div class="col s12 m6 l4 offset-m2 offset-l4">
       <div class="card">
         <div class="card-action red lighten-2 white-text">
-          <h3>Register</h3>
+          <h3>
+            Register
+            <a
+              @click="openModal()"
+              class="btn-floating btn-sm grey float-right"
+            >
+              <i class="material-icons">help_outline</i>
+            </a>
+          </h3>
         </div>
         <form @submit.prevent="Register">
           <div class="card-content">
@@ -57,14 +65,19 @@
       </div>
     </div>
   </div>
+  <Modal ref="modal" />
 </template>
 
 <script>
 import { ref } from "vue";
 import { firebaseAuth, firebaseDb } from "../utils/firebase.js";
+import Modal from "@/components/Modal.vue";
 import Swal from "sweetalert2";
 
 export default {
+  components: {
+    Modal,
+  },
   data() {
     return {
       email: ref(""),
@@ -78,7 +91,8 @@ export default {
       firebaseAuth
         .createUserWithEmailAndPassword(this.email, this.password)
         .then((data) => {
-          firebaseDb.collection("users")
+          firebaseDb
+            .collection("users")
             .doc(data.user.uid)
             .set({
               user_id: data.user.uid,
@@ -90,8 +104,14 @@ export default {
             })
             .then(() => {
               firebaseAuth.currentUser.sendEmailVerification();
-              alert("An email will be sent in order for you to authenticate your account.");
-              Swal.fire("Registered successfully.", "An email will be sent in order for you to authenticate your account.", "success");
+              alert(
+                "An email will be sent in order for you to authenticate your account."
+              );
+              Swal.fire(
+                "Registered successfully.",
+                "An email will be sent in order for you to authenticate your account.",
+                "success"
+              );
               firebaseAuth
                 .signOut()
                 .then(() => {
@@ -102,6 +122,9 @@ export default {
             .catch((err) => alert(err.message));
         })
         .catch((err) => alert(err.message));
+    },
+    openModal() {
+      this.$refs.modal.show();
     },
   },
 };

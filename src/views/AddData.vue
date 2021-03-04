@@ -3,7 +3,11 @@
     <div class="card-group col s12 m6 l4 offset-m2 offset-l4">
       <div class="card">
         <div class="card-action red lighten-2 white-text">
-          <h3>Add experimental data</h3>
+          <h3>Add experimental data
+            <a @click="openModal()" class="btn-floating btn-sm grey float-right">
+              <i class="material-icons">help_outline</i>
+              </a>
+          </h3>
         </div>
         <form @submit.prevent="SubmitNewData">
           <div class="card-content">
@@ -214,6 +218,7 @@
       </div>
     </div>
   </div>
+  <Modal ref="modal" />
 </template>
 
 <script>
@@ -224,6 +229,7 @@ import {
   chartDataTypes,
 } from "../utils/sharedData";
 import { ref } from "vue";
+import Modal from "@/components/Modal.vue";
 import Swal from "sweetalert2";
 
 export default {
@@ -244,6 +250,9 @@ export default {
       mutatedGenes,
       chartDataTypes,
     };
+  },
+  components: {
+    Modal,
   },
   methods: {
     OnFileSelected(event) {
@@ -335,12 +344,19 @@ export default {
           date_created: new Date().toDateString(),
         })
         .then(() => {
-          Swal.fire("Success", "Data successfully added! The input form will now be cleared.", "success");
+          Swal.fire(
+            "Success",
+            "Data successfully added! The input form will now be cleared.",
+            "success"
+          );
           event.target.reset();
         })
         .catch((error) => {
           alert("Error adding data to db: ", error);
         });
+    },
+    openModal() {
+      this.$refs.modal.show();
     },
   },
 };
