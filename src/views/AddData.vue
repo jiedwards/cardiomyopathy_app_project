@@ -271,7 +271,6 @@ export default {
     },
     onDecimalOptionChange(event) {
       this.decimal_point = event.target.value;
-      console.log(this.decimal_point);
     },
     onChartDataTypeDropdownChange(event) {
       this.chart_data_type = event.target.value;
@@ -336,7 +335,6 @@ export default {
       if (this.cardiomyopathy_type == "Hypertrophic cardiomyopathy(HCM)") {
         api_disease_id = apiIdGeneMap[self.gene.value];
       }
-      console.log(api_disease_id);
 
       firebaseDb
         .collection("experimental-data")

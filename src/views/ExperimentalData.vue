@@ -175,7 +175,6 @@ export default {
       );
 
       let api_disease_id = this.ExperimentalDataApiCache[0].api_disease_id;
-      console.log(api_disease_id);
       this.GetGeneData(api_disease_id);
       this.isHidden = !this.isHidden;
     },

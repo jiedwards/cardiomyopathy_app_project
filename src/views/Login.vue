@@ -5,9 +5,12 @@
         <div class="card-action red lighten-2 white-text">
           <h3>
             Login
-            <a @click="openModal()" class="btn-floating btn-sm grey float-right">
+            <a
+              @click="openModal()"
+              class="btn-floating btn-sm grey float-right"
+            >
               <i class="material-icons">help_outline</i>
-              </a>
+            </a>
           </h3>
         </div>
         <form @submit.prevent="Login">
@@ -43,7 +46,7 @@
       </div>
     </div>
   </div>
-  <Modal ref="modal"/>
+  <Modal ref="modal" />
 </template>
 
 <script>

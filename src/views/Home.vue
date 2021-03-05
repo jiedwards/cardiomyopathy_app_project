@@ -2,7 +2,7 @@
   <div class="home container">
     <h2>Cardiomyopathy Database</h2>
     <i class="material-icons">favorite</i>
-    <br><br>
+    <br /><br />
     <p>
       Cardiomyopathy (kahr-dee-o-my-OP-uh-thee) is a disease of the heart muscle
       that makes it harder for your heart to pump blood to the rest of your

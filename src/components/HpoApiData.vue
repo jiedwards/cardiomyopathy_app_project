@@ -15,9 +15,9 @@
             <div>
               <h6>Disease Name: {{ diseaseData.disease.diseaseName }}</h6>
               <h6>Type: {{ disease.catLabel }}</h6>
-              <hr>
+              <hr />
               <h5>Cardiovascular Clinical Synopsis</h5>
-              <br>
+              <br />
             </div>
 
             <div
