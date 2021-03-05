@@ -1,6 +1,16 @@
-# cardiomyopathy_app_project
+# Cardiomyopathy_app_project
 
-## Project setup
+This web application allows users to store, view and manage data about cardiomyopathy types for either educational or research purposes etc.
+
+The project is currently hosted [here](https://cardiomyopathy-app-e86ad.web.app/).
+
+## Getting Started
+
+### Prerequisites
+
+* You must be in possession of [Firebase config](https://firebase.google.com/docs/web/setup) in order to operate this project with your own data. The config should be placed within the **_firebaseConfig_** property in the *src/utils/firebase.js file*.
+
+### Project setup
 ```
 npm install
 ```
@@ -15,9 +25,9 @@ npm run serve
 npm run build
 ```
 
-### Run your end-to-end tests
+### Run the unit tests
 ```
-npm run test:e2e
+npm run unit
 ```
 
 ### Lints and fixes files
@@ -25,5 +35,7 @@ npm run test:e2e
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Built With
+
+* [Firebase API](https://firebase.google.com/docs/reference) - The backend implementation for the application. 
+* [Vue.js 3](https://v3.vuejs.org/guide/introduction.html) - The web framework used to develop the frontend.

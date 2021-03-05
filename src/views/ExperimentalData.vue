@@ -12,6 +12,7 @@
 
     <div id="filterDropdown" class="container">
       <h5>Data filters</h5>
+      <h7>Filter to get more information on disease/gene</h7>
       <div class="row justify-content-center">
         <form @submit.prevent="GetFilteredExperimentalData">
           <div class="input-field col-md">
