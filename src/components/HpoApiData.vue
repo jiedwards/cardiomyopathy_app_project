@@ -12,10 +12,14 @@
           :offset="index > 0 ? 2 : 0"
         >
           <div v-if="disease.catLabel == 'Cardiovascular'">
-            <div style="padding: 14px" class="bottom">
+            <div>
               <h6>Disease Name: {{ diseaseData.disease.diseaseName }}</h6>
-              <span>Type: {{ disease.catLabel }}</span>
+              <h6>Type: {{ disease.catLabel }}</h6>
+              <hr>
+              <h5>Cardiovascular Clinical Synopsis</h5>
+              <br>
             </div>
+
             <div
               :span="8"
               v-for="(terms, index) in disease.terms"
