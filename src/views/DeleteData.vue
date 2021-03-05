@@ -54,11 +54,14 @@ export default {
   mounted: function () {
     this.$nextTick(this.GetAllUserCharts);
   },
-  setup() {
-    let chartList = ref([]);
-    let welcomeMessage = ref("");
-
-    function GetAllUserCharts() {
+  data() {
+    return {
+      chartList: ref([]),
+      welcomeMessage: ref(""),
+    };
+  },
+  methods: {
+    GetAllUserCharts() {
       this.chartList = [];
       firebaseDb
         .collection("experimental-data")
@@ -67,7 +70,7 @@ export default {
         .then((querySnapshot) => {
           //Edge case for when no experimental data exists.
           if (querySnapshot.docs.length == 0) {
-            welcomeMessage.value = "You have no experimental data";
+            this.welcomeMessage = "You have no experimental data";
           } else {
             querySnapshot.forEach((doc) => {
               let docData = doc.data();
@@ -78,16 +81,15 @@ export default {
               }
 
               this.chartList.push([doc.id, docData]);
-              welcomeMessage.value = "Here is your experimental data:";
+              this.welcomeMessage = "Here is your experimental data:";
             });
           }
         })
         .catch((error) => {
           alert("Error getting documents: ", error);
         });
-    }
-
-    function DeleteData(chartDocumentId) {
+    },
+    DeleteData(chartDocumentId) {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -112,9 +114,7 @@ export default {
         }
       });
     }
-
-    return { welcomeMessage, chartList, GetAllUserCharts, DeleteData };
-  },
+  }
 };
 </script>
 

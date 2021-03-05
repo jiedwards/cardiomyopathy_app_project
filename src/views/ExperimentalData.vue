@@ -12,6 +12,7 @@
 
     <div id="filterDropdown" class="container">
       <h5>Data filters</h5>
+      <h7>Filter to get more information on disease/gene</h7>
       <div class="row justify-content-center">
         <form @submit.prevent="GetFilteredExperimentalData">
           <div class="input-field col-md">
@@ -175,7 +176,6 @@ export default {
       );
 
       let api_disease_id = this.ExperimentalDataApiCache[0].api_disease_id;
-      console.log(api_disease_id);
       this.GetGeneData(api_disease_id);
       this.isHidden = !this.isHidden;
     },

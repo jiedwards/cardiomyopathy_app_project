@@ -5,7 +5,13 @@
         <ul class="left">
           <li><router-link to="/">Home</router-link></li>
           <li><router-link to="/faq">FAQs</router-link></li>
-          <li v-if="isLoggedIn"><router-link to="/experimental-data">Experimental data<i class="material-icons right">show_chart</i></router-link></li>
+          <li v-if="isLoggedIn">
+            <router-link to="/experimental-data"
+              >Experimental data<i class="material-icons right"
+                >show_chart</i
+              ></router-link
+            >
+          </li>
         </ul>
 
         <!-- Dropdown menu for when user is logged in -->

@@ -1,9 +1,18 @@
 <template>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+  />
   <div id="app">
-    <Navbar :isLoggedIn="isLoggedIn" :userProfileData="userProfileData"/>
+    <Navbar :isLoggedIn="isLoggedIn" :userProfileData="userProfileData" />
   </div>
   <router-view />
 </template>
@@ -17,20 +26,20 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      userProfileData: {}
-    }
+      userProfileData: {},
+    };
   },
   mounted() {
-        
     firebaseAuth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
-        firebaseDb.collection("users")
-        .doc(currentUser.uid)
-        .get()
-        .then((user) => {
-          this.userProfileData = user.data();
-        })
-        .catch((err) => alert(err.message));
+        firebaseDb
+          .collection("users")
+          .doc(currentUser.uid)
+          .get()
+          .then((user) => {
+            this.userProfileData = user.data();
+          })
+          .catch((err) => alert(err.message));
 
         this.isLoggedIn = true;
       } else {
@@ -40,7 +49,7 @@ export default {
     });
   },
   components: {
-    Navbar
+    Navbar,
   },
 };
 </script>
@@ -52,5 +61,4 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
 </style>

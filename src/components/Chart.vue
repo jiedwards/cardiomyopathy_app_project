@@ -14,9 +14,8 @@
         </div>
 
         <div class="col">
-          
           <h5>Chart details: {{ data.docData.chart_data_type }}</h5>
-          <br><br>
+          <br /><br />
           <p><strong> Gene: </strong>{{ data.docData.gene }}</p>
           <p><strong> Data Source: </strong>{{ data.docData.data_source }}</p>
           <p>

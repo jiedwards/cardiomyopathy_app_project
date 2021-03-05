@@ -36,6 +36,7 @@ function GenerateCharts(ExperimentalData) {
                     },
                 },
                 yaxis: {
+                    decimalsInFloat: 2,
                     title: {
                         text: docData.y_axis_label,
                     },
