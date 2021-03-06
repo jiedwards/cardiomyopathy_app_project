@@ -88,7 +88,10 @@ export default {
         .catch((err) => alert(err.message));
     },
     ForgotPassword() {
-      if (
+      if (this.email == '') {
+        alert('Please enter an email address in the field to reset your password.');
+      } else {
+        if (
         confirm(
           `Would you like a password reset email to be sent to: ${this.email} `
         )
@@ -104,6 +107,7 @@ export default {
           })
           .catch((err) => alert(err.message));
       }
+      }      
     },
     openModal() {
       this.$refs.modal.show();
