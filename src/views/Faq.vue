@@ -34,10 +34,6 @@
         down and view the data.
       </p>
       <h5 type="button" v-on:click="toggletext()">
-        • How should I interpret the charts?
-      </h5>
-      <p v-show="isHidden">blah blah</p>
-      <h5 type="button" v-on:click="toggletext()">
         • How do I add experimental data?
       </h5>
       <p v-show="isHidden">
